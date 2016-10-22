@@ -1,0 +1,48 @@
+version: '2'
+
+services:
+  web:
+    image: nginx:latest
+    hostname: web.localhost
+    container_name: test-web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./etc/nginx/ssl:/etc/nginx/ssl
+      - ./www:/var/www
+    links:
+      - php
+
+  php:
+    build: ../build/php/
+    image: my-php:7fpm
+    hostname: php.localhost
+    container_name: test-php
+    working_dir: /var/www/myApp
+    volumes:
+      - ./etc/php/php.ini:/usr/local/etc/php/php.ini
+      - ./etc/php-fpm.d/docker.conf:/usr/local/etc/php-fpm.d/docker.conf
+      - ./www:/var/www
+    links:
+      - db
+
+  db:
+    image: mariadb:latest
+    hostname: db.localhost
+    container_name: test-db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=password
+    volumes:
+      - ./etc/mysql/conf.d/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf
+      - test-db:/var/lib/mysql
+
+volumes:
+  test-db:

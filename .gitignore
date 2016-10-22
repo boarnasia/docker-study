@@ -1,0 +1,3 @@
+volumes/common/var/log/*
+volumes/db/var/lib/mysql/*
+composer.lock

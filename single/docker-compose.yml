@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  web:
+    image: nginx:latest
+    hostname: web.localhost
+    container_name: test-web
+    ports:
+      - "80:80"
